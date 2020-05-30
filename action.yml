@@ -1,0 +1,24 @@
+name: 'Endpoint Readiness Action'
+description: 'Run docker compose command and check for the readiness of the target service'
+author: 'akhettar'
+inputs:
+  readiness-endpoint:  # health url
+    description: 'health endpoint url to probe'
+    required: true
+    default: 'http://localhost:8080/v1/health'
+  docker-compose:  # docker compose command flag
+    description: 'flag to disable the running of the docker compose command'
+    required: false
+    default: 'false'
+  timeout:  # timeout
+    description: 'time out to wait if the the health endpoint does not return a response'
+    required: false
+    default: '30s'
+ 
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  args:
+    - ${{ inputs.readiness-endpoint }}
+    - ${{ inputs.docker-compose }}
+    - ${{ inputs.timeout }}
