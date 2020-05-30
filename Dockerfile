@@ -29,5 +29,5 @@ RUN CGO_ENABLED=1 GOOS=linux GOARCH=amd64 go install -a -tags netgo -ldflags '-w
 FROM alpine AS readinessAction
 
 # Finally we copy the statically compiled Go binary and the docker entry point
-COPY --from=tool_builder /go/bin/readiness-action /bin/readiness-action
+COPY --from=tool_builder /go/bin/readiness-check /bin/readiness-check
 COPY --from=tool_builder /go/bin/docker-entrypoint.sh /bin/docker-entrypoint.sh
