@@ -5,7 +5,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"os/exec"
 	"strconv"
 	"time"
 )
@@ -16,7 +15,6 @@ const (
 	DefaultRunDockerComposeFlag = false
 	InputTimeout                = "INPUT_TIMEOUT"
 	InputReadinessEndpiont      = "INPUT_READINESS_ENDPOINT"
-	RunDockerCompose            = "INPUT_DOCKER_COMPOSE"
 )
 
 // ReadinessCheck type
@@ -41,14 +39,6 @@ func New() *ReadinessCheck {
 	}
 
 	c := &http.Client{Timeout: 1 * time.Second}
-
-	// Run docker compose command if requested
-	if runDockerFlag := os.Getenv(RunDockerCompose); runDockerFlag != "" {
-		err := runDockerCompose()
-		if err != nil {
-			log.Fatalf("failed to run docker compose command with error: %v", err)
-		}
-	}
 	return &ReadinessCheck{client: c, endpoint: url, timeout: timeout}
 }
 
@@ -61,12 +51,6 @@ func (h *ReadinessCheck) check() error {
 		log.Println("proving the health endpoint")
 	}
 	return fmt.Errorf("failed to check the readiness of the given endpoint on time: %v", h.timeout)
-}
-
-func runDockerCompose() error {
-	log.Panicln("running docker compose")
-	cmd := exec.Command("docker-compose", "up", "--build", "&")
-	return cmd.Run()
 }
 
 func main() {
