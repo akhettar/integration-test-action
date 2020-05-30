@@ -5,7 +5,7 @@ FROM golang:alpine3.11 AS build_base
 # Install some dependencies needed to build the project
 USER root
 RUN apk add bash ca-certificates git gcc g++ libc-dev
-WORKDIR /go/src/apigw-pub
+WORKDIR /go/src/readiness-check
 
 # Force the go compiler to use modules
 ENV GO111MODULE=on
