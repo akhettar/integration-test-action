@@ -49,7 +49,7 @@ func NewReadinessCheck() *ReadinessCheck {
 }
 
 func replace(s string) string {
-	return strings.Replace((s[0:len(s)-1])+":8080/v1/health", "https", "http", 0)
+	return strings.Replace((s[0:len(s)-1])+":8080/v1/health", "https", "http", 1)
 
 }
 
