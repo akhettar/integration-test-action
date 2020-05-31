@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -34,22 +35,21 @@ func NewReadinessCheck() *ReadinessCheck {
 	}
 
 	// url, ok := os.LookupEnv(InputReadinessEndpiont)
-	// url, ok := os.LookupEnv("ACTIONS_RUNTIME_URL")
-	url, _ := os.Hostname()
-	// if !ok {
-	// 	log.Fatal("the readiness endpoint must be provided")
-	// }
+	url, ok := os.LookupEnv("ACTIONS_RUNTIME_URL")
+	if !ok {
+		log.Fatal("the readiness endpoint must be provided")
+	}
 
 	log.Printf("*****GITHUB_SERVER_URL: %s\n", url)
 	log.Printf("*****ACTIONS_RUNTIME_URL: %s\n", os.Getenv("ACTIONS_RUNTIME_URL"))
 
 	c := &http.Client{Timeout: 1 * time.Second}
 	// return &ReadinessCheck{client: c, endpoint: "http://" + url + ":8080/v1/health", timeout: timeout}
-	return &ReadinessCheck{client: c, endpoint: url + ":8080/v1/health", timeout: timeout}
+	return &ReadinessCheck{client: c, endpoint: replace(url), timeout: timeout}
 }
 
 func replace(s string) string {
-	return string(s[0:len(s)-1]) + ":8080/v1/health"
+	return strings.Replace((s[0:len(s)-1])+":8080/v1/health", "https", "http", 0)
 
 }
 
