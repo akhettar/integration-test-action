@@ -33,8 +33,8 @@ func NewReadinessCheck() *ReadinessCheck {
 		}
 	}
 
-	url, ok := os.LookupEnv(InputReadinessEndpiont)
-	//url, ok := os.LookupEnv("GITHUB_SERVER_URL")
+	// url, ok := os.LookupEnv(InputReadinessEndpiont)
+	url, ok := os.LookupEnv("ACTIONS_RUNTIME_URL")
 	if !ok {
 		log.Fatal("the readiness endpoint must be provided")
 	}
@@ -43,7 +43,12 @@ func NewReadinessCheck() *ReadinessCheck {
 	log.Printf("*****ACTIONS_RUNTIME_URL: %s\n", os.Getenv("ACTIONS_RUNTIME_URL"))
 	c := &http.Client{Timeout: 1 * time.Second}
 	// return &ReadinessCheck{client: c, endpoint: "http://" + url + ":8080/v1/health", timeout: timeout}
-	return &ReadinessCheck{client: c, endpoint: url, timeout: timeout}
+	return &ReadinessCheck{client: c, endpoint: replace(url), timeout: timeout}
+}
+
+func replace(s string) string {
+	return string(s[0:len(s)-1]) + ":8080/v1/health"
+
 }
 
 func (h *ReadinessCheck) check() error {
