@@ -14,7 +14,7 @@ const (
 	DefaultTimeout              = 40 * time.Second
 	DefaultRunDockerComposeFlag = false
 	InputTimeout                = "INPUT_TIMEOUT"
-	InputReadinessEndpiont      = "INPUT_READINESS_ENDPOINT"
+	InputReadinessEndpiont      = "INPUT_READINESS-ENDPOINT"
 )
 
 // ReadinessCheck type
