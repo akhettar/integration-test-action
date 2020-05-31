@@ -35,7 +35,7 @@ func NewReadinessCheck() *ReadinessCheck {
 	}
 
 	// url, ok := os.LookupEnv(InputReadinessEndpiont)
-	url, ok := os.LookupEnv("ACTIONS_RUNTIME_URL")
+	url, ok := os.LookupEnv("GITHUB_SERVER_URL")
 	if !ok {
 		log.Fatal("the readiness endpoint must be provided")
 	}
