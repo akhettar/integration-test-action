@@ -24,8 +24,8 @@ type ReadinessCheck struct {
 	client   *http.Client
 }
 
-// New create an instance of the HealthCheck
-func New() *ReadinessCheck {
+// NewReadinessCheck create an instance of the HealthCheck
+func NewReadinessCheck() *ReadinessCheck {
 	timeout := DefaultTimeout
 	if t := os.Getenv(InputTimeout); t != "" {
 		if n, err := strconv.Atoi(t); err == nil {
@@ -33,13 +33,16 @@ func New() *ReadinessCheck {
 		}
 	}
 
-	url, ok := os.LookupEnv(InputReadinessEndpiont)
+	// url, ok := os.LookupEnv(InputReadinessEndpiont)
+	url, ok := os.LookupEnv("GITHUB_SERVER_URL")
 	if !ok {
 		log.Fatal("the readiness endpoint must be provided")
 	}
 
+	log.Printf("*****GITHUB_SERVER_URL: %s\n", url)
+	log.Printf("*****ACTIONS_RUNTIME_URL: %s\n", os.Getenv("ACTIONS_RUNTIME_URL"))
 	c := &http.Client{Timeout: 1 * time.Second}
-	return &ReadinessCheck{client: c, endpoint: url, timeout: timeout}
+	return &ReadinessCheck{client: c, endpoint: "http://" + url + ":8080/v1/health", timeout: timeout}
 }
 
 func (h *ReadinessCheck) check() error {
@@ -51,11 +54,4 @@ func (h *ReadinessCheck) check() error {
 		log.Println("proving the health endpoint")
 	}
 	return fmt.Errorf("failed to check the readiness of the given endpoint on time: %v", h.timeout)
-}
-
-func main() {
-	if err := New().check(); err != nil {
-		log.Fatalf("failed to prove the readiness endpoint with error: %v", err)
-	}
-	log.Println("The service is up and running")
 }
